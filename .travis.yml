@@ -1,0 +1,26 @@
+#
+# \brief Default Travis for the Empty Project
+# \author Leon Ezequiel D.
+#
+dist: trusty
+
+language: cpp
+
+compiler: gcc
+
+before_install:
+  - sudo pip install conan
+
+script:
+  - mkdir build
+  - cd build
+  - conan install ..
+  - cmake .. -DTRAVISCI=ON
+  - cmake --build . --config release
+  - make utest
+  - sudo make install
+
+branches:
+  only:
+    - master
+    - develop

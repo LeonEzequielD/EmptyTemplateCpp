@@ -7,7 +7,7 @@ then
     conan install ..
     cmake ..
     cmake --build . --config release
-    make check
+    make utest
     make install
 else
     if [[ "$1" ==  "clean" ]]
