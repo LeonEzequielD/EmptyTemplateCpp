@@ -20,8 +20,8 @@ target_link_libraries(${PROJECT_NAME} ${GTEST_BOTH_LIBRARIES})
 
 # Create Test #################################################################
 enable_testing()
-add_custom_target(check ${CMAKE_CTEST_COMMAND} -V)
+add_custom_target(utest ${CMAKE_CTEST_COMMAND} -V)
 add_test(NAME TestAll
         COMMAND ${PROJECT_NAME}
         WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
-add_dependencies(check ${PROJECT_NAME})
+add_dependencies(utest ${PROJECT_NAME})
