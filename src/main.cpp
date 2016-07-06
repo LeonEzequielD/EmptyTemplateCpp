@@ -1,17 +1,89 @@
-// A simple program that computes the square root of a number
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
-int main (int argc, char *argv[])
+/**
+ * \file
+ * \brief Launch My Application
+ */
+
+#include <Poco/Util/ServerApplication.h>
+#include <iostream>
+
+/********************************************************************/
+
+class MyAppSubsystem : public Poco::Util::Subsystem
 {
-  if (argc < 2)
+   public:
+    /**
+     * \brief virtual destructor
+     */
+    ~MyAppSubsystem() override = default;
+
+   protected:
+    void initialize(Poco::Util::Application &app) override
     {
-    fprintf(stdout,"Usage: %s number\n",argv[0]);
-    return 1;
+        std::ignore = app;
+
+        std::cout << std::endl << "MyAppSubsystem::" << __FUNCTION__ << std::endl;
     }
-  double inputValue = atof(argv[1]);
-  double outputValue = sqrt(inputValue);
-  fprintf(stdout,"The square root of %g is %g\n",
-          inputValue, outputValue);
-  return 0;
-}
+
+    void reinitialize(Poco::Util::Application &app) override
+    {
+        std::ignore = app;
+
+        std::cout << std::endl << "MyAppSubsystem::" << __FUNCTION__ << std::endl;
+    }
+
+    void uninitialize() override
+    {
+        std::cout << std::endl << "MyAppSubsystem::" << __FUNCTION__ << std::endl;
+    }
+
+    const char* name() const override
+    {
+        return "MyAppSubsystem";
+    }
+
+};
+
+/********************************************************************/
+
+class MyApp : public Poco::Util::ServerApplication {
+   public:
+    /**
+     * \brief virtual destructor
+     */
+    ~MyApp() override = default;
+
+   private:
+    /**
+     * \brief Execute main function
+     * \param args arguments from stdin
+     * \return process code error
+     */
+    int main(const ArgVec& args) override
+    {
+        std::ignore = args;
+
+        std::cout << std::endl << __FUNCTION__ << std::endl;
+
+        waitForTerminationRequest();
+
+        return Poco::Util::Application::EXIT_OK;
+    }
+
+    /**
+     * \brief Load config file
+     * \param self ownership
+     */
+    void initialize(Application& self) override
+    {
+        self.addSubsystem(new MyAppSubsystem());
+
+        std::cout << std::endl << __FUNCTION__ << std::endl;
+
+        Application::initialize(self);
+    }
+
+};
+
+/********************************************************************/
+
+POCO_SERVER_MAIN(MyApp)

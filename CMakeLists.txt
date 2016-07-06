@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.0.8)
 project(EmptyTemplateCpp CXX)
 
+include_directories(${CMAKE_SOURCE_DIR})
+
 # Create Install #############################################################
 file(MAKE_DIRECTORY ${CMAKE_SOURCE_DIR}/_output)
 
@@ -10,7 +12,7 @@ conan_basic_setup()
 
 # Compiler flags ##############################################################
 set(CMAKE_VERBOSE_MAKEFILE 1)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -coverage -std=c++11 -pedantic -Wall -Wshadow -Wextra -Winit-self -Wold-style-cast -Woverloaded-virtual -Werror")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -coverage -std=c++11 -pedantic -Wall -Wextra -Winit-self -Wold-style-cast -Woverloaded-virtual -Werror")
 
 # Add sub directories #########################################################
 add_subdirectory(src)
