@@ -1,0 +1,8 @@
+{
+    "description" : "Simple Empty App",
+    "log" : {
+        "path" : "/tmp/",
+        "max_file_size" : "1 M",
+        "root_directory" : "/tmp/"
+    }
+}
