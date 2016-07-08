@@ -35,6 +35,48 @@ class SampleTask: public Poco::Task
 
 /********************************************************************/
 
+class MyAppSubsystem : public Poco::Util::Subsystem
+{
+   public:
+
+    MyAppSubsystem(Poco::TaskManager* task_manager)
+        : task_manager_(task_manager)
+    {
+    }
+
+    ~MyAppSubsystem() override = default;
+
+   protected:
+    Poco::TaskManager* task_manager_;
+
+    void initialize(Poco::Util::Application &app) override
+    {
+        std::ignore = app;
+        task_manager_->start(new SampleTask());
+        std::cout << std::endl << "MyAppSubsystem::" << __FUNCTION__ << std::endl;
+    }
+
+    void reinitialize(Poco::Util::Application &app) override
+    {
+        std::ignore = app;
+
+        std::cout << std::endl << "MyAppSubsystem::" << __FUNCTION__ << std::endl;
+    }
+
+    void uninitialize() override
+    {
+        std::cout << std::endl << "MyAppSubsystem::" << __FUNCTION__ << std::endl;
+    }
+
+    const char* name() const override
+    {
+        return "MyAppSubsystem";
+    }
+
+};
+
+/********************************************************************/
+
 class MyApp : public Poco::Util::ServerApplication {
    public:
 
@@ -44,6 +86,8 @@ class MyApp : public Poco::Util::ServerApplication {
     ~MyApp() override = default;
 
    private:
+    Poco::TaskManager task_manager;
+
     Poco::PatternFormatter*     pattern_formatter_;     /** Pattern for log */
     Poco::FormattingChannel*    formatting_channel_;    /** Formatting Channel */
     Poco::FileChannel*          file_channel_;          /** File Channel */
@@ -57,9 +101,6 @@ class MyApp : public Poco::Util::ServerApplication {
     {
         std::ignore = args;
         std::cout << std::endl << typeid(*this).name() << "::" << __FUNCTION__ << std::endl;
-
-        Poco::TaskManager task_manager;
-        task_manager.start(new SampleTask());
 
         waitForTerminationRequest();
 
@@ -80,6 +121,9 @@ class MyApp : public Poco::Util::ServerApplication {
         std::cout << std::endl << typeid(*this).name() << "::" << __FUNCTION__ << std::endl;
         loadConfiguration();
         configureLog();
+
+        self.addSubsystem(new MyAppSubsystem(&task_manager));
+
         Application::initialize(self);
     }
 

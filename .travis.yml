@@ -17,6 +17,7 @@ script:
   - conan install ..
   - cmake .. -DTRAVISCI=ON
   - cmake --build . --config release
+  - valgrind --leak-check=full --error-exitcode=1 ./bin/unit_testsuite
   - make utest
   - sudo make install
 
