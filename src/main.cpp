@@ -4,55 +4,50 @@
  */
 
 #include <Poco/Util/ServerApplication.h>
+#include <Poco/Task.h>
+#include <Poco/TaskManager.h>
+#include <Poco/FileChannel.h>
+#include <Poco/FormattingChannel.h>
+#include <Poco/PatternFormatter.h>
+#include <Poco/Path.h>
 #include <iostream>
+
 
 /********************************************************************/
 
-class MyAppSubsystem : public Poco::Util::Subsystem
+class SampleTask: public Poco::Task
 {
    public:
-    /**
-     * \brief virtual destructor
-     */
-    ~MyAppSubsystem() override = default;
+	SampleTask(): Poco::Task("SampleTask")
+	{
+	}
 
-   protected:
-    void initialize(Poco::Util::Application &app) override
-    {
-        std::ignore = app;
+	void runTask()
+	{
+		while (!sleep(5000))
+		{
+            std::cout << std::endl << typeid(*this).name() << "::" << __FUNCTION__ << std::endl;
 
-        std::cout << std::endl << "MyAppSubsystem::" << __FUNCTION__ << std::endl;
-    }
-
-    void reinitialize(Poco::Util::Application &app) override
-    {
-        std::ignore = app;
-
-        std::cout << std::endl << "MyAppSubsystem::" << __FUNCTION__ << std::endl;
-    }
-
-    void uninitialize() override
-    {
-        std::cout << std::endl << "MyAppSubsystem::" << __FUNCTION__ << std::endl;
-    }
-
-    const char* name() const override
-    {
-        return "MyAppSubsystem";
-    }
-
+            Poco::Util::Application::instance().logger().information("busy doing nothing... ");
+		}
+	}
 };
 
 /********************************************************************/
 
 class MyApp : public Poco::Util::ServerApplication {
    public:
+
     /**
      * \brief virtual destructor
      */
     ~MyApp() override = default;
 
    private:
+    Poco::PatternFormatter*     pattern_formatter_;     /** Pattern for log */
+    Poco::FormattingChannel*    formatting_channel_;    /** Formatting Channel */
+    Poco::FileChannel*          file_channel_;          /** File Channel */
+
     /**
      * \brief Execute main function
      * \param args arguments from stdin
@@ -61,10 +56,17 @@ class MyApp : public Poco::Util::ServerApplication {
     int main(const ArgVec& args) override
     {
         std::ignore = args;
+        std::cout << std::endl << typeid(*this).name() << "::" << __FUNCTION__ << std::endl;
 
-        std::cout << std::endl << __FUNCTION__ << std::endl;
+        Poco::TaskManager task_manager;
+        task_manager.start(new SampleTask());
 
         waitForTerminationRequest();
+
+    	task_manager.cancelAll();
+		task_manager.joinAll();
+
+        std::cout << std::endl << typeid(*this).name() << "::" << __FUNCTION__ << std::endl;
 
         return Poco::Util::Application::EXIT_OK;
     }
@@ -75,11 +77,41 @@ class MyApp : public Poco::Util::ServerApplication {
      */
     void initialize(Application& self) override
     {
-        self.addSubsystem(new MyAppSubsystem());
-
-        std::cout << std::endl << __FUNCTION__ << std::endl;
-
+        std::cout << std::endl << typeid(*this).name() << "::" << __FUNCTION__ << std::endl;
+        loadConfiguration();
+        configureLog();
         Application::initialize(self);
+    }
+
+    void uninitialize() override
+    {
+        /**
+        delete pattern_formatter_;
+        delete formatting_channel_;
+        delete file_channel_;
+        */
+    }
+
+    void configureLog()
+    {
+        logger().setLevel("debug");
+        Poco::Logger::root().setLevel("debug");
+
+        file_channel_ = new Poco::FileChannel();
+        const auto& app_name = config().getString("application.name");
+
+        Poco::Path log_path = config().getString("log.path");
+        log_path.append(app_name + "-app.log");
+
+        file_channel_->setProperty("path", log_path.toString());
+        file_channel_->setProperty("rotation", config().getString("log.max_file_size"));
+        file_channel_->setProperty("archive", "timestamp");
+
+        pattern_formatter_ = new Poco::PatternFormatter();
+        pattern_formatter_->setProperty("pattern", "%Y-%m-%d %H:%M:%S %s: %t");
+        formatting_channel_ = new Poco::FormattingChannel(pattern_formatter_, file_channel_);
+        Poco::Logger::root().setChannel(formatting_channel_);
+        logger().setChannel(formatting_channel_);
     }
 
 };
