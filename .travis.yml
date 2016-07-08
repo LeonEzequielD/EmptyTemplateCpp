@@ -10,6 +10,7 @@ compiler: gcc
 
 before_install:
   - sudo pip install conan
+  - sudo apt-get install -qq valgrind
 
 script:
   - mkdir build
