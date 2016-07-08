@@ -7,6 +7,9 @@ then
     conan install ..
     cmake ..
     cmake --build . --config release
+    echo "-----------------------------------------------------------"
+    valgrind --leak-check=full --error-exitcode=1 ./bin/test-empty-template
+    echo "-----------------------------------------------------------"
     make utest
     make install
 else
