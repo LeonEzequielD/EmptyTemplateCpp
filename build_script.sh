@@ -8,7 +8,9 @@ then
     cmake ..
     cmake --build . --config release
     echo "-----------------------------------------------------------"
-    valgrind --leak-check=full --error-exitcode=1 ./bin/test-empty-template
+    cd bin
+    valgrind --leak-check=full --error-exitcode=1 --xml=yes --xml-file=valgrind_result.xml ./test-empty-template
+    cd ..
     echo "-----------------------------------------------------------"
     make utest
     make install

@@ -14,6 +14,8 @@ conan_basic_setup()
 set(CMAKE_VERBOSE_MAKEFILE 1)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -coverage -std=c++11 -pedantic -Wall -Wextra -Winit-self -Woverloaded-virtual -Werror")
 
+set(PROJECT_DAEMON_NAME empty_templated)
+
 # Add sub directories #########################################################
 add_subdirectory(src)
 

@@ -39,14 +39,12 @@ void MyApp::configureLog()
     log_path.append(app_name + "-app.log");
 
     file_channel_->setProperty("path", log_path.toString());
-    file_channel_->setProperty("rotation",
-                             config().getString("log.max_file_size"));
+    file_channel_->setProperty("rotation", config().getString("log.max_file_size"));
     file_channel_->setProperty("archive", "timestamp");
 
     pattern_formatter_ = new Poco::PatternFormatter();
     pattern_formatter_->setProperty("pattern", "%Y-%m-%d %H:%M:%S %s: %t");
-    formatting_channel_ =
-        new Poco::FormattingChannel(pattern_formatter_, file_channel_);
+    formatting_channel_ = new Poco::FormattingChannel(pattern_formatter_, file_channel_);
     Poco::Logger::root().setChannel(formatting_channel_);
     logger().setChannel(formatting_channel_);
 }
