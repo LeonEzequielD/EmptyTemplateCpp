@@ -18,7 +18,9 @@ script:
   - conan install ..
   - cmake .. -DTRAVISCI=ON
   - cmake --build . --config release
-  - valgrind --leak-check=full --error-exitcode=1 ./bin/test-empty-template
+  - cd bin
+  - valgrind --leak-check=full --error-exitcode=1 ./test-empty-template
+  - cd ..
   - make utest
   - sudo make install
 
