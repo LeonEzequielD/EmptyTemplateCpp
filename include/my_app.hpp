@@ -28,9 +28,9 @@ class MyApp : public Poco::Util::ServerApplication {
    private:
     Poco::TaskManager task_manager;
 
-    Poco::PatternFormatter*     pattern_formatter_;     /** Pattern for log */
-    Poco::FormattingChannel*    formatting_channel_;    /** Formatting Channel */
-    Poco::FileChannel*          file_channel_;          /** File Channel */
+    Poco::AutoPtr<Poco::PatternFormatter>     pattern_formatter_;     /** Pattern for log */
+    Poco::AutoPtr<Poco::FormattingChannel>    formatting_channel_;    /** Formatting Channel */
+    Poco::AutoPtr<Poco::FileChannel>          file_channel_;          /** File Channel */
 
     /**
      * \brief Execute main function

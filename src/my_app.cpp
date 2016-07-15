@@ -20,6 +20,7 @@ int MyApp::main(const ArgVec &args)
 void MyApp::initialize(Application &self)
 {
     loadConfiguration();
+
     configureLog();
 
     self.addSubsystem(new MyAppSubsystem(&task_manager));
