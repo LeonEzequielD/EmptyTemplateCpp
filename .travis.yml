@@ -10,6 +10,7 @@ compiler: gcc
 
 before_install:
   - sudo pip install conan
+  - sudo apt-get install -qq valgrind
 
 script:
   - mkdir build
@@ -17,6 +18,9 @@ script:
   - conan install ..
   - cmake .. -DTRAVISCI=ON
   - cmake --build . --config release
+  - cd bin
+  - valgrind --leak-check=full --error-exitcode=1 --trace-children=yes --show-leak-kinds=all ./test-empty-template
+  - cd ..
   - make utest
   - sudo make install
 
