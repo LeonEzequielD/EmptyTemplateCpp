@@ -20,9 +20,6 @@
 class MyApp : public Poco::Util::ServerApplication {
    public:
 
-    /**
-     * \brief virtual destructor
-     */
     ~MyApp() override = default;
 
    private:
@@ -32,22 +29,10 @@ class MyApp : public Poco::Util::ServerApplication {
     Poco::AutoPtr<Poco::FormattingChannel>    formatting_channel_;    /** Formatting Channel */
     Poco::AutoPtr<Poco::FileChannel>          file_channel_;          /** File Channel */
 
-    /**
-     * \brief Execute main function
-     * \param args arguments from stdin
-     * \return process code error
-     */
     int main(const ArgVec& args) override;
 
-    /**
-     * \brief Load config file
-     * \param self ownership
-     */
     void initialize(Application& self) override;
 
-    /**
-     * \brief Configures Log File
-     */
     void configureLog();
 
 };
