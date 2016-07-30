@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0.2)
-project(${PROJECT_DAEMON_NAME} CXX)
+project(${PROJECT_DAEMON_NAME} CXX C)
 
 # Boost Package ###############################################################
 find_package(Boost REQUIRED regex log log_setup filesystem system thread)

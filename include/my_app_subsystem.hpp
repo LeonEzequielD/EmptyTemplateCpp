@@ -15,34 +15,17 @@ class MyAppSubsystem : public Poco::Util::Subsystem
 {
    public:
 
-    /**
-     * \brief Constructor
-     * \param task_manager reference to main App task manager
-     */
     MyAppSubsystem(Poco::TaskManager* task_manager);
 
-    /**
-     * \brief default destructor
-     */
     ~MyAppSubsystem() override = default;
 
    protected:
-
-    /** Reference to main App task manager */
     Poco::TaskManager* task_manager_;
 
-    /**
-     * \brief Initializer for this Subsystem, called after the constructor
-     * \param app Reference to the main app
-     */
     void initialize(Poco::Util::Application &app) override;
 
-    /**
-     * \brief uninitializer for this Subsystem, called before destructor
-     */
     void uninitialize() override;
 
-    /** Subsystem Name */
     const char* name() const override;
 };
 
